@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">4 min read</span>
+    <span class="article-duration">3 min read</span>
     
 
     <h1 class="article-title">Text Cleaning Assignment</h1>
@@ -76,6 +76,7 @@
 <script src="melaniegentrup.github.io/2021/03/28/text-cleaning-assignment/index_files/header-attrs/header-attrs.js"></script>
 
 
+<p>First, I loaded the tidyverse library, which will give me the ability to work with my data.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
@@ -85,6 +86,15 @@
 <pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
 ## x dplyr::filter() masks stats::filter()
 ## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(ggalt)</code></pre>
+<pre><code>## Registered S3 methods overwritten by &#39;ggalt&#39;:
+##   method                  from   
+##   grid.draw.absoluteGrob  ggplot2
+##   grobHeight.absoluteGrob ggplot2
+##   grobWidth.absoluteGrob  ggplot2
+##   grobX.absoluteGrob      ggplot2
+##   grobY.absoluteGrob      ggplot2</code></pre>
+<p>Here, I imported my data and named it logs. I imported it with the “read_csv” function, and then created the path to where the data is in my computer.</p>
 <pre class="r"><code>logs &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/CSV/badfootballlogs19.csv&quot;)</code></pre>
 <pre><code>## 
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -100,62 +110,23 @@
 ##   Conference = col_character()
 ## )
 ## ℹ Use `spec()` for the full column specifications.</code></pre>
-<pre class="r"><code>logs</code></pre>
-<pre><code>## # A tibble: 1,662 x 51
-##     Game Date  HomeAway Opponent Result PassingCmp PassingAtt PassingPct
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;       &lt;dbl&gt;      &lt;dbl&gt;      &lt;dbl&gt;
-##  1     1 8/24… N        Miami (… W (24…         17         27       63  
-##  2     2 9/7/… &lt;NA&gt;     Tenness… W (45…         30         36       83.3
-##  3     3 9/14… @        Kentucky W (29…         21         30       70  
-##  4     4 9/21… &lt;NA&gt;     Tenness… W (34…         24         34       70.6
-##  5     5 9/28… &lt;NA&gt;     Towson   W (38…         24         28       85.7
-##  6     6 10/5… &lt;NA&gt;     Auburn   W (24…         25         39       64.1
-##  7     7 10/1… @        Louisia… L (28…         24         44       54.5
-##  8     8 10/1… @        South C… W (38…         21         33       63.6
-##  9     9 11/2… N        Georgia  L (17…         21         33       63.6
-## 10    10 11/9… &lt;NA&gt;     Vanderb… W (56…         27         40       67.5
-## # … with 1,652 more rows, and 43 more variables: PassingYds &lt;dbl&gt;,
-## #   PassingTD &lt;dbl&gt;, RushingAtt &lt;dbl&gt;, RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;,
-## #   RushingTD &lt;dbl&gt;, OffensivePlays &lt;dbl&gt;, OffensiveYards &lt;dbl&gt;,
-## #   OffenseAvg &lt;dbl&gt;, FirstDownPass &lt;dbl&gt;, FirstDownRush &lt;dbl&gt;,
-## #   FirstDownPen &lt;dbl&gt;, FirstDownTotal &lt;dbl&gt;, Penalties &lt;dbl&gt;,
-## #   PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;, Interceptions &lt;dbl&gt;, TotalTurnovers &lt;dbl&gt;,
-## #   TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;, DefPassingCmp &lt;dbl&gt;, DefPassingAtt &lt;dbl&gt;,
-## #   DefPassingPct &lt;dbl&gt;, DefPassingYds &lt;dbl&gt;, DefPassingTD &lt;dbl&gt;,
-## #   DefRushingAtt &lt;dbl&gt;, DefRushingYds &lt;dbl&gt;, DefRushingAvg &lt;dbl&gt;,
-## #   DefRushingTD &lt;dbl&gt;, DefPlays &lt;dbl&gt;, DefYards &lt;dbl&gt;, DefAvg &lt;dbl&gt;,
-## #   DefFirstDownPass &lt;dbl&gt;, DefFirstDownRush &lt;dbl&gt;, DefFirstDownPen &lt;dbl&gt;,
-## #   DefFirstDownTotal &lt;dbl&gt;, DefPenalties &lt;dbl&gt;, DefPenaltyYds &lt;dbl&gt;,
-## #   DefFumbles &lt;dbl&gt;, DefInterceptions &lt;dbl&gt;, DefTotalTurnovers &lt;dbl&gt;,
-## #   Team &lt;chr&gt;, Conference &lt;chr&gt;</code></pre>
-<pre class="r"><code>logs %&gt;% separate(Result, into=c(&quot;Outcome&quot;, &quot;Score&quot;), sep=&quot; ()&quot;) %&gt;% mutate(Score=gsub(&quot;\\(&quot;,&quot;&quot;,Score)) %&gt;% mutate(Score=gsub(&quot;\\)&quot;,&quot;&quot;,Score)) %&gt;% separate(Score, into=c(&quot;TeamScore&quot;, &quot;OpponentScore&quot;), sep=&quot;-&quot;)</code></pre>
-<pre><code>## # A tibble: 1,662 x 53
-##     Game Date  HomeAway Opponent Outcome TeamScore OpponentScore PassingCmp
-##    &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;    &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;              &lt;dbl&gt;
-##  1     1 8/24… N        Miami (… W       24        20                    17
-##  2     2 9/7/… &lt;NA&gt;     Tenness… W       45        0                     30
-##  3     3 9/14… @        Kentucky W       29        21                    21
-##  4     4 9/21… &lt;NA&gt;     Tenness… W       34        3                     24
-##  5     5 9/28… &lt;NA&gt;     Towson   W       38        0                     24
-##  6     6 10/5… &lt;NA&gt;     Auburn   W       24        13                    25
-##  7     7 10/1… @        Louisia… L       28        42                    24
-##  8     8 10/1… @        South C… W       38        27                    21
-##  9     9 11/2… N        Georgia  L       17        24                    21
-## 10    10 11/9… &lt;NA&gt;     Vanderb… W       56        0                     27
-## # … with 1,652 more rows, and 45 more variables: PassingAtt &lt;dbl&gt;,
-## #   PassingPct &lt;dbl&gt;, PassingYds &lt;dbl&gt;, PassingTD &lt;dbl&gt;, RushingAtt &lt;dbl&gt;,
-## #   RushingYds &lt;dbl&gt;, RushingAvg &lt;dbl&gt;, RushingTD &lt;dbl&gt;, OffensivePlays &lt;dbl&gt;,
-## #   OffensiveYards &lt;dbl&gt;, OffenseAvg &lt;dbl&gt;, FirstDownPass &lt;dbl&gt;,
-## #   FirstDownRush &lt;dbl&gt;, FirstDownPen &lt;dbl&gt;, FirstDownTotal &lt;dbl&gt;,
-## #   Penalties &lt;dbl&gt;, PenaltyYds &lt;dbl&gt;, Fumbles &lt;dbl&gt;, Interceptions &lt;dbl&gt;,
-## #   TotalTurnovers &lt;dbl&gt;, TeamFull &lt;chr&gt;, TeamURL &lt;chr&gt;, DefPassingCmp &lt;dbl&gt;,
-## #   DefPassingAtt &lt;dbl&gt;, DefPassingPct &lt;dbl&gt;, DefPassingYds &lt;dbl&gt;,
-## #   DefPassingTD &lt;dbl&gt;, DefRushingAtt &lt;dbl&gt;, DefRushingYds &lt;dbl&gt;,
-## #   DefRushingAvg &lt;dbl&gt;, DefRushingTD &lt;dbl&gt;, DefPlays &lt;dbl&gt;, DefYards &lt;dbl&gt;,
-## #   DefAvg &lt;dbl&gt;, DefFirstDownPass &lt;dbl&gt;, DefFirstDownRush &lt;dbl&gt;,
-## #   DefFirstDownPen &lt;dbl&gt;, DefFirstDownTotal &lt;dbl&gt;, DefPenalties &lt;dbl&gt;,
-## #   DefPenaltyYds &lt;dbl&gt;, DefFumbles &lt;dbl&gt;, DefInterceptions &lt;dbl&gt;,
-## #   DefTotalTurnovers &lt;dbl&gt;, Team &lt;chr&gt;, Conference &lt;chr&gt;</code></pre>
+<p>In this data set, I separated the Result into three new categories: Outcome, Team Score, and Opponent Score. I did this by getting rid of parentheses and commas. Then I mutated a new field called Differential to find the point differentials to each game.</p>
+<pre class="r"><code>newlogs &lt;- logs %&gt;% separate(Result, into=c(&quot;Outcome&quot;, &quot;Score&quot;), sep=&quot; ()&quot;) %&gt;% mutate(Score=gsub(&quot;\\(&quot;,&quot;&quot;,Score)) %&gt;% mutate(Score=gsub(&quot;\\)&quot;,&quot;&quot;,Score)) %&gt;% separate(Score, into=c(&quot;TeamScore&quot;, &quot;OpponentScore&quot;), sep=&quot;-&quot;) %&gt;% mutate(Differential=as.numeric(TeamScore)-as.numeric(OpponentScore))</code></pre>
+<p>Here I filtered out the worst games. If a team lost or won by 65, that was considered a bad game.</p>
+<pre class="r"><code>worstgames &lt;- newlogs %&gt;% filter(Differential&gt;65)</code></pre>
+<p>Then, I created my chart. This has a LOT to unpack. So first, I created a scatterplot with two different sets of data to highlight. First, we have all game differentials from the season. Using geom_point, I used my newlogs, which contained my split Team and Opponent Scores. I colored those grey so they would be in the backgroun. Then I did the same thing with the data that contained only the worst games. I colored those red to make them stick out. Even more, I circled them using geom_encircle. Then, I gave the chart a title, a caption, and a subtitle. I also named my x and y axis. I have the entire chart a minimal theme, and then sized each piece of text. I also made the chart wider and longer using fig.width and fig.height.</p>
+<pre class="r"><code>ggplot() + 
+  geom_point(data=newlogs, aes(x=TeamScore, y=OpponentScore), color=&quot;grey&quot;) + 
+  geom_point(data=worstgames, aes(x=TeamScore, y=OpponentScore), colour=&quot;red&quot;) + geom_encircle(data=worstgames, aes(x=TeamScore, y=OpponentScore), s_shape=0, expand=-.08, colour=&quot;red&quot;) +
+  labs(title=&quot;College Football&#39;s Worst Games&quot;, caption= &quot;Source: Sports Reference | By: Melanie Gentrup&quot;, subtitle = &quot;Here are last season worst games, where a team was beat by at least 65 points&quot;, x=&quot;Team Score&quot;, y=&quot;Opponent Score&quot;) + 
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 18, face = &quot;bold&quot;),
+    axis.title = element_text(size = 12), 
+    plot.subtitle = element_text(size=12), 
+    panel.grid.minor = element_blank()
+    )</code></pre>
+<p><img src="melaniegentrup.github.io/2021/03/28/text-cleaning-assignment/index_files/figure-html/unnamed-chunk-5-1.png" width="480" /></p>
 
     </div>
   </article>
