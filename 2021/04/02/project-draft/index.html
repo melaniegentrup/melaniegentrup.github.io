@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.81.0" />
+
+
+<title>Project  Draft - A Hugo website</title>
+<meta property="og:title" content="Project  Draft - A Hugo website">
+
+
+  <link href='melaniegentrup.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/melaniegentrup.github.io/css/fonts.css" media="all">
+<link rel="stylesheet" href="/melaniegentrup.github.io/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/melaniegentrup.github.io/" class="nav-logo">
+    <img src="/melaniegentrup.github.io/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="melaniegentrup.github.io/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/mgentrup">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">11 min read</span>
+    
+
+    <h1 class="article-title">Project  Draft</h1>
+
+    
+    <span class="article-date">2021-04-02</span>
+    
+
+    <div class="article-content">
+      
+<script src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/header-attrs/header-attrs.js"></script>
+<script src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/kePrint/kePrint.js"></script>
+<link href="melaniegentrup.github.io/2021/04/02/project-draft/index_files/lightable/lightable.css" rel="stylesheet" />
+
+
+<pre class="r"><code>library(tidyverse)</code></pre>
+<pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
+<pre><code>## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
+## ✓ tibble  3.0.5     ✓ dplyr   1.0.3
+## ✓ tidyr   1.1.2     ✓ stringr 1.4.0
+## ✓ readr   1.4.0     ✓ forcats 0.5.0</code></pre>
+<pre><code>## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<pre class="r"><code>library(kableExtra)</code></pre>
+<pre><code>## 
+## Attaching package: &#39;kableExtra&#39;</code></pre>
+<pre><code>## The following object is masked from &#39;package:dplyr&#39;:
+## 
+##     group_rows</code></pre>
+<pre class="r"><code>library(ggrepel)
+library(ggbump)</code></pre>
+<pre class="r"><code>logs &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/2020cfblogs.csv&quot;)</code></pre>
+<pre><code>## Warning: Duplicated column names deduplicated: &#39;20+Yards&#39; =&gt; &#39;20+Yards_1&#39; [121],
+## &#39;30+Yards&#39; =&gt; &#39;30+Yards_1&#39; [122], &#39;40+Yards&#39; =&gt; &#39;40+Yards_1&#39; [123], &#39;50+Yards&#39;
+## =&gt; &#39;50+Yards_1&#39; [124]</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   .default = col_double(),
+##   Team = col_character()
+## )
+## ℹ Use `spec()` for the full column specifications.</code></pre>
+<p>What is weighing Nebraska football down?</p>
+<p>First let’s take a look at a handful of stats and figure out the weight of each stat on a team’s winning percentage.</p>
+<pre class="r"><code>NetYPG &lt;- logs %&gt;% 
+  mutate(NetYPG = (RushYards + PassYards)-(OppRushYards + OppPassYards)/G)
+net &lt;- lm(PCT ~ `NetYPG`, data = NetYPG)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ NetYPG, data = NetYPG)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.44089 -0.13565 -0.02542  0.13941  0.44734 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 1.710e-01  4.948e-02   3.456  0.00075 ***
+## NetYPG      1.041e-04  1.475e-05   7.059 1.02e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2135 on 125 degrees of freedom
+## Multiple R-squared:  0.285,  Adjusted R-squared:  0.2793 
+## F-statistic: 49.84 on 1 and 125 DF,  p-value: 1.022e-10</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ `OppRZScore%`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `OppRZScore%`, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.55105 -0.15174 -0.01321  0.18831  0.49715 
+## 
+## Coefficients:
+##                Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.307019   0.250382   5.220 7.23e-07 ***
+## `OppRZScore%` -0.009828   0.003014  -3.261  0.00143 ** 
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2424 on 125 degrees of freedom
+## Multiple R-squared:  0.07839,    Adjusted R-squared:  0.07102 
+## F-statistic: 10.63 on 1 and 125 DF,  p-value: 0.001433</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ `30+Yards`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `30+Yards`, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.47624 -0.15133 -0.02082  0.16761  0.41788 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.236844   0.042854   5.527 1.82e-07 ***
+## `30+Yards`  0.013714   0.002046   6.703 6.26e-10 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2165 on 125 degrees of freedom
+## Multiple R-squared:  0.2644, Adjusted R-squared:  0.2585 
+## F-statistic: 44.94 on 1 and 125 DF,  p-value: 6.257e-10</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ `RZScore%`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `RZScore%`, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.64162 -0.17415  0.00257  0.16799  0.47996 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.495830   0.216041  -2.295   0.0234 *  
+## `RZScore%`   0.012044   0.002618   4.601 1.02e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2335 on 125 degrees of freedom
+## Multiple R-squared:  0.1448, Adjusted R-squared:  0.138 
+## F-statistic: 21.17 on 1 and 125 DF,  p-value: 1.016e-05</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ `TFL Yards`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `TFL Yards`, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.54869 -0.14559 -0.00909  0.17447  0.45024 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.2192869  0.0514930   4.259 4.01e-05 ***
+## `TFL Yards` 0.0013304  0.0002303   5.777 5.71e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2243 on 125 degrees of freedom
+## Multiple R-squared:  0.2107, Adjusted R-squared:  0.2044 
+## F-statistic: 33.37 on 1 and 125 DF,  p-value: 5.705e-08</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ `TFL Yards`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `TFL Yards`, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.54869 -0.14559 -0.00909  0.17447  0.45024 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.2192869  0.0514930   4.259 4.01e-05 ***
+## `TFL Yards` 0.0013304  0.0002303   5.777 5.71e-08 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2243 on 125 degrees of freedom
+## Multiple R-squared:  0.2107, Adjusted R-squared:  0.2044 
+## F-statistic: 33.37 on 1 and 125 DF,  p-value: 5.705e-08</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ TOMargin, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ TOMargin, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.47040 -0.15746  0.03908  0.15708  0.41854 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) 0.490457   0.018786  26.107  &lt; 2e-16 ***
+## TOMargin    0.023648   0.003252   7.271 3.42e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2117 on 125 degrees of freedom
+## Multiple R-squared:  0.2972, Adjusted R-squared:  0.2916 
+## F-statistic: 52.87 on 1 and 125 DF,  p-value: 3.423e-11</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~  `Opp3rdConv%`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `Opp3rdConv%`, data = logs)
+## 
+## Residuals:
+##     Min      1Q  Median      3Q     Max 
+## -0.7039 -0.1190 -0.0226  0.1454  0.5328 
+## 
+## Coefficients:
+##               Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)    1.41616    0.12605  11.235  &lt; 2e-16 ***
+## `Opp3rdConv%` -0.02287    0.00309  -7.401 1.74e-11 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.2105 on 125 degrees of freedom
+## Multiple R-squared:  0.3047, Adjusted R-squared:  0.2991 
+## F-statistic: 54.77 on 1 and 125 DF,  p-value: 1.739e-11</code></pre>
+<pre class="r"><code>net &lt;- lm(PCT ~ `3rdConv%`, data = logs)
+summary(net)</code></pre>
+<pre><code>## 
+## Call:
+## lm(formula = PCT ~ `3rdConv%`, data = logs)
+## 
+## Residuals:
+##      Min       1Q   Median       3Q      Max 
+## -0.48369 -0.13051 -0.00049  0.12864  0.44949 
+## 
+## Coefficients:
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept) -0.551693   0.097833  -5.639 1.08e-07 ***
+## `3rdConv%`   0.025976   0.002398  10.832  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.1813 on 125 degrees of freedom
+## Multiple R-squared:  0.4842, Adjusted R-squared:  0.4801 
+## F-statistic: 117.3 on 1 and 125 DF,  p-value: &lt; 2.2e-16</code></pre>
+<pre class="r"><code>correlations &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/correlations.csv&quot;)</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   Statistic = col_character(),
+##   `Weight on Winning PCT` = col_character(),
+##   `Statisically Significant?` = col_character()
+## )</code></pre>
+<pre class="r"><code>correlations %&gt;% 
+  kable() %&gt;% 
+  kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;condensed&quot;)) %&gt;%
+  row_spec(7, bold = T, color = &quot;white&quot;, background = &quot;#add8e6&quot;) %&gt;%
+  column_spec(1, bold =T)</code></pre>
+<table class="table table-striped table-condensed" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;">
+Statistic
+</th>
+<th style="text-align:left;">
+Weight on Winning PCT
+</th>
+<th style="text-align:left;">
+Statisically Significant?
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Net Yards Per Game
+</td>
+<td style="text-align:left;">
+28%
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Opponent Red Zone %
+</td>
+<td style="text-align:left;">
+7%
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+30+Yard Plays
+</td>
+<td style="text-align:left;">
+26%
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Red Zone %
+</td>
+<td style="text-align:left;">
+13%
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Tackle-For-Loss Yards
+</td>
+<td style="text-align:left;">
+20%
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;">
+Turnover Margin
+</td>
+<td style="text-align:left;">
+29%
+</td>
+<td style="text-align:left;">
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #add8e6 !important;font-weight: bold;">
+3rd Down Conversion %
+</td>
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #add8e6 !important;">
+48%
+</td>
+<td style="text-align:left;font-weight: bold;color: white !important;background-color: #add8e6 !important;">
+Yes
+</td>
+</tr>
+</tbody>
+</table>
+<p>Now let’s take a look at how Nebraska has done since it joined the Big Ten. We’re going to look at 3rd Down Conversion, Turnover Margin, and 30+ Yard Plays.</p>
+<pre class="r"><code>AllCFB &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/logs11-20.csv&quot;)</code></pre>
+<pre><code>## 
+## ── Column specification ────────────────────────────────────────────────────────
+## cols(
+##   Name = col_character(),
+##   Year = col_double(),
+##   G = col_double(),
+##   `3rdAttempts` = col_double(),
+##   `3rdConversions` = col_double(),
+##   `3rdConv%` = col_double(),
+##   `Fum. Gain` = col_double(),
+##   `Int. Gain` = col_double(),
+##   `Total Gain` = col_double(),
+##   `Fum. Lost` = col_double(),
+##   `Int. Lost` = col_double(),
+##   `Total Lost` = col_double(),
+##   TOMargin = col_double(),
+##   `TOMargin/G` = col_double(),
+##   `30+YardsPlays` = col_double(),
+##   Wins = col_double(),
+##   Losses = col_double(),
+##   Pct = col_double()
+## )</code></pre>
+<pre class="r"><code>bigten &lt;- AllCFB %&gt;%
+  filter(Name == &quot;Nebraska&quot; | Name == &quot;Iowa&quot; | Name == &quot;Northwestern&quot; | Name == &quot;Ohio State&quot; | Name == &quot;Michigan State&quot; | Name == &quot;Michigan&quot; | Name == &quot;Rutgers&quot; |Name == &quot;Maryland&quot; | Name == &quot;Indiana&quot; | Name == &quot;Illinois&quot; | Name == &quot;Wisconsin&quot; | Name == &quot;Minnesota&quot; | Name == &quot;Penn State&quot; | Name == &quot;Purdue&quot;)</code></pre>
+<pre class="r"><code>average3rdConv &lt;- bigten %&gt;% 
+  group_by(Name) %&gt;% 
+  summarize(
+  `Avg3rd%` = mean(`3rdConv%`),
+  AvgWinPct = mean(Pct)
+)
+NU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Nebraska&quot;)
+OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</code></pre>
+<pre class="r"><code>AllCFB %&gt;% summarize(
+  Avg3rdConv = mean(`3rdConv%`)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   Avg3rdConv
+##        &lt;dbl&gt;
+## 1       40.2</code></pre>
+<pre class="r"><code>bigten %&gt;% summarize(
+  AvgWinPct = mean(Pct)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   AvgWinPct
+##       &lt;dbl&gt;
+## 1     0.548</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_hline(yintercept = 40.19829, color= &quot;grey&quot;) +
+  geom_vline(xintercept= .5476643, color= &quot;grey&quot;) +
+  scale_y_continuous(breaks = c(30, 35, 40, 45, 50)) +
+  scale_x_continuous(breaks = c(.1,.2,.3,.4,.5,.6,.7,.8,.9,1)) +
+  geom_point(
+    data=average3rdConv, 
+    aes(x=AvgWinPct, y=`Avg3rd%`, size = 1), color=&quot;grey&quot;) +
+  geom_point(
+    data=NU3rdDown,
+    aes(x=AvgWinPct, y=`Avg3rd%`, size = 1),
+    color=&quot;red&quot;) + theme_minimal() +
+  geom_text_repel(
+    data= NU3rdDown,
+    aes(x=.52, y=41, label=Name)) +
+   geom_point(
+    data=OSU3rdDown,
+    aes(x=AvgWinPct, y=`Avg3rd%`, size = 1),
+    color=&quot;black&quot;) + 
+  geom_text_repel(
+    data= OSU3rdDown,
+    aes(x=.85, y=45, label=Name)) + theme_minimal() +
+      labs(x=&quot;Average Win Percentage&quot;, y=&quot;Average 3rd Down Conversion Percentage&quot;, title= &quot;Nebraska Offense is Pretty...Average &quot;, subtitle= &quot;If Nebraska wants to compete at a playoff level, like Ohio State, it has to convert more on 3rd down.&quot;, caption= &quot;Source: Sports Reference, CFB Stats | By Melanie Gentrup&quot;) +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10),
+    legend.position = &quot;none&quot;,
+    panel.grid.minor = element_blank()
+  )</code></pre>
+<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<pre class="r"><code>NU &lt;- bigten %&gt;% filter(Name == &quot;Nebraska&quot;)
+`Avg3rdAllCFB` &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(`avg3rd`=mean(`3rdConv%`))</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_line(data=AllCFB, aes(x=Year, y=`3rdConv%`, group=Name), color=&quot;light grey&quot;) +
+  geom_line(data=`Avg3rdAllCFB`, aes(x=Year, y=avg3rd), color=&quot;blue&quot;) +
+  geom_line(data=NU, aes(x=Year, y=`3rdConv%`, group= Name), color= &quot;red&quot;) +
+  scale_x_continuous(breaks= c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
+  theme_minimal() +
+  geom_text(aes(x=2018.5, y=36, label=&quot;Scott Frost Era&quot;), color=&quot;red&quot;) +
+  geom_text(aes(x=2012, y=38, label=&quot;National Average&quot;), color=&quot;blue&quot;) +
+   geom_text(aes(x=2012, y=44.5, label=&quot;Nebraska&quot;), color=&quot;red&quot;) +
+  labs(x=&quot;Year&quot;, y=&quot;Avg. 3rd Down Conversion Percentage&quot;, title= &quot;Nebraska Still Struggling on 3rd Down&quot;, subtitle = &quot;The Huskers fell below average under Mike Riley&#39;s coaching and through Scott Frost&#39;s third year,\n still haven&#39;t figured out 3rd down conversion.&quot;, caption= &quot;CFB Stats | By Melanie Gentrup&quot;) +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10),
+    legend.position = &quot;none&quot;,
+    panel.grid.minor = element_blank()
+  )</code></pre>
+<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code>AvgBigPlays &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(avgBP=mean(`30+YardsPlays`))</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_line(data=AllCFB, aes(x=Year, y=`30+YardsPlays`, group=Name), color=&quot;light grey&quot;) +
+  geom_line(data=`AvgBigPlays`, aes(x=Year, y=avgBP), color=&quot;blue&quot;) +
+  geom_line(data=NU, aes(x=Year, y=`30+YardsPlays`, group= Name), color= &quot;red&quot;) +
+  scale_x_continuous(breaks= c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
+  theme_minimal() </code></pre>
+<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code>averageBigPlays &lt;- bigten %&gt;% 
+  group_by(Name) %&gt;% 
+  summarize(
+    AvgBP = mean(`30+YardsPlays`),
+    AvgWinPct = mean(Pct)
+)</code></pre>
+<pre class="r"><code>AllCFB %&gt;%
+  summarize(
+    AvgBP = mean(`30+YardsPlays`)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   AvgBP
+##   &lt;dbl&gt;
+## 1  26.7</code></pre>
+<pre class="r"><code>bigten %&gt;% summarize(
+  AvgWinPct = mean(Pct)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   AvgWinPct
+##       &lt;dbl&gt;
+## 1     0.548</code></pre>
+<pre class="r"><code>NebraskaBP &lt;- averageBigPlays %&gt;% filter(Name == &quot;Nebraska&quot;)
+OSUBP &lt;- averageBigPlays %&gt;% filter(Name == &quot;Ohio State&quot;)</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_hline(yintercept = 26.69134, color= &quot;grey&quot;) +
+  geom_vline(xintercept= .5476643, color= &quot;grey&quot;) +
+  scale_x_continuous(breaks = c(.1,.2,.3,.4,.5,.6,.7,.8,.9,1)) +
+  geom_point(
+    data=averageBigPlays, 
+    aes(x=AvgWinPct, y=`AvgBP`, size= 1), color=&quot;grey&quot;) +
+  geom_point(
+    data=NebraskaBP,
+    aes(x=AvgWinPct, y=`AvgBP`, size= 1),
+    color=&quot;red&quot;) + theme_minimal() +
+  geom_text_repel(
+    data= NebraskaBP,
+    aes(x=.52, y=26.5, label=Name)) +
+  geom_point(
+    data=OSUBP,
+    aes(x=AvgWinPct, y= AvgBP, size = 1), color= &quot;black&quot;) +
+  geom_text_repel(
+    data=OSUBP,
+    aes(x= .84, y=35.5, label=Name)) +
+  labs(x=&quot;Avg. Win Percentage&quot;, y=&quot;Average 30+ Yard Plays&quot;, title= &quot;Nebraska&#39;s Offense Lacks Big Plays&quot;, subtitle= &quot;The Huskers don&#39;t convert the big plays needed to succeed. &quot;, caption= &quot;Source: Sports Reference, CFB Stats | By Melanie Gentrup&quot;) +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 9), 
+    plot.subtitle = element_text(size=10),
+    legend.position = &quot;none&quot;,
+    panel.grid.minor = element_blank()
+  )</code></pre>
+<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code>averageTOMargin &lt;- bigten %&gt;% group_by(Name) %&gt;% summarize(
+  AvgTOMargin = mean(TOMargin),
+  AvgWinPct = mean(Pct)
+)</code></pre>
+<pre class="r"><code>AllCFB %&gt;% summarize(
+  AvgTOMargin = mean(TOMargin)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   AvgTOMargin
+##         &lt;dbl&gt;
+## 1       0.401</code></pre>
+<pre class="r"><code>bigten %&gt;% summarize(
+  AvgWinPct = mean(Pct)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 1
+##   AvgWinPct
+##       &lt;dbl&gt;
+## 1     0.548</code></pre>
+<pre class="r"><code>NebraskaTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Nebraska&quot;)
+OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_hline(yintercept = .4007874, color= &quot;grey&quot;) +
+  geom_vline(xintercept= .5476643, color= &quot;grey&quot;) +
+  scale_x_continuous(breaks = c(.1,.2,.3,.4,.5,.6,.7,.8,.9,1)) +
+  scale_y_continuous(breaks = c(-10,-5,0,5,10,15,20,25,30,35,40)) +
+  
+  geom_point(
+    data=averageTOMargin, 
+    aes(x=AvgWinPct, y=AvgTOMargin, size= 1), color=&quot;grey&quot;) +
+  geom_point(
+    data=NebraskaTO,
+    aes(x=AvgWinPct, y=AvgTOMargin, size= 1),
+    color=&quot;red&quot;) + theme_minimal() +
+  geom_text_repel(
+    data= NebraskaTO,
+    aes(x=.51, y=-3, label=Name)) +
+  geom_point(
+    data=OSUBP,
+    aes(x=AvgWinPct, y= AvgBP, size = 1), color= &quot;black&quot;) +
+  geom_text_repel(
+    data=OSUBP,
+    aes(x= .84, y=32.2, label=Name)) +
+  theme_minimal() +
+  labs(x=&quot;Average Win Percentage&quot;, y=&quot;Average Turnover Margin&quot;, title= &quot;Nebraska Not Winning the Turnover Battle&quot;, subtitle= &quot;The Husker&#39;s poor performance in the turnover game reaps a less than ideal winning percentage.&quot;, caption= &quot;Source: Sports Reference, CFB Stats | By Melanie Gentrup&quot;) +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10),
+    legend.position = &quot;none&quot;,
+    panel.grid.minor = element_blank() )</code></pre>
+<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<pre class="r"><code>NUTO &lt;- bigten %&gt;% filter(Name == &quot;Nebraska&quot;)
+`AvgTOAllCFB` &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(`avgTO`=mean(TOMargin))</code></pre>
+<pre class="r"><code>ggplot() + 
+  geom_line(data=AllCFB, aes(x=Year, y=`TOMargin`, group=Name), color=&quot;light grey&quot;) +
+  geom_line(data=`AvgTOAllCFB`, aes(x=Year, y=`avgTO`), color=&quot;blue&quot;) +
+  geom_line(data=NUTO, aes(x=Year, y=`TOMargin`, group= Name), color= &quot;red&quot;) +
+  scale_x_continuous(breaks= c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
+    theme_minimal() +
+  geom_text(aes(x=2018.5, y=-7, label=&quot;Scott Frost Era&quot;), color=&quot;red&quot;) +
+  geom_text(aes(x=2012, y=5, label=&quot;National Average&quot;), color=&quot;blue&quot;) +
+   geom_text(aes(x=2012, y=-17, label=&quot;Nebraska&quot;), color=&quot;red&quot;) +
+  labs(x=&quot;Year&quot;, y=&quot;Avg. Turnover Margin&quot;, title= &quot;Nebraska Stays Below the National Avg. in the Turnover Game&quot;, subtitle= &quot;The Huskers&quot;, caption= &quot;CFB Stats | By Melanie Gentrup&quot;) +
+  theme(
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10), 
+    plot.subtitle = element_text(size=10),
+    legend.position = &quot;none&quot;,
+    panel.grid.minor = element_blank()
+  )</code></pre>
+<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/melaniegentrup.github.io/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/melaniegentrup.github.io/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/melaniegentrup.github.io/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
