@@ -10,7 +10,7 @@
 <meta property="og:title" content="Project  Draft - A Hugo website">
 
 
-  <link href='melaniegentrup.github.io/favicon.ico' rel='icon' type='image/x-icon'/>
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
 
 
 
@@ -27,8 +27,8 @@
 
 
 
-<link rel="stylesheet" href="/melaniegentrup.github.io/css/fonts.css" media="all">
-<link rel="stylesheet" href="/melaniegentrup.github.io/css/main.css" media="all">
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
 
 
 
@@ -37,8 +37,8 @@
     <div class="wrapper">
       <header class="header">
         <nav class="nav">
-  <a href="/melaniegentrup.github.io/" class="nav-logo">
-    <img src="/melaniegentrup.github.io/images/logo.png"
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
          width="50"
          height="50"
          alt="Logo">
@@ -46,7 +46,7 @@
 
   <ul class="nav-links">
     
-    <li><a href="melaniegentrup.github.io/about/">About</a></li>
+    <li><a href="/about/">About</a></li>
     
     <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
     
@@ -73,9 +73,9 @@
 
     <div class="article-content">
       
-<script src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/header-attrs/header-attrs.js"></script>
-<script src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/kePrint/kePrint.js"></script>
-<link href="melaniegentrup.github.io/2021/04/02/project-draft/index_files/lightable/lightable.css" rel="stylesheet" />
+<script src="/2021/04/02/project-draft/index_files/header-attrs/header-attrs.js"></script>
+<script src="/2021/04/02/project-draft/index_files/kePrint/kePrint.js"></script>
+<link href="/2021/04/02/project-draft/index_files/lightable/lightable.css" rel="stylesheet" />
 
 
 <pre class="r"><code>library(tidyverse)</code></pre>
@@ -475,7 +475,7 @@ OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</c
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <pre class="r"><code>NU &lt;- bigten %&gt;% filter(Name == &quot;Nebraska&quot;)
 `Avg3rdAllCFB` &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(`avg3rd`=mean(`3rdConv%`))</code></pre>
 <pre class="r"><code>ggplot() + 
@@ -495,7 +495,7 @@ OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</c
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 <pre class="r"><code>AvgBigPlays &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(avgBP=mean(`30+YardsPlays`))</code></pre>
 <pre class="r"><code>ggplot() + 
   geom_line(data=AllCFB, aes(x=Year, y=`30+YardsPlays`, group=Name), color=&quot;light grey&quot;) +
@@ -503,7 +503,7 @@ OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</c
   geom_line(data=NU, aes(x=Year, y=`30+YardsPlays`, group= Name), color= &quot;red&quot;) +
   scale_x_continuous(breaks= c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
   theme_minimal() </code></pre>
-<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <pre class="r"><code>averageBigPlays &lt;- bigten %&gt;% 
   group_by(Name) %&gt;% 
   summarize(
@@ -555,7 +555,7 @@ OSUBP &lt;- averageBigPlays %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <pre class="r"><code>averageTOMargin &lt;- bigten %&gt;% group_by(Name) %&gt;% summarize(
   AvgTOMargin = mean(TOMargin),
   AvgWinPct = mean(Pct)
@@ -606,7 +606,7 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
     plot.subtitle = element_text(size=10),
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank() )</code></pre>
-<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
 <pre class="r"><code>NUTO &lt;- bigten %&gt;% filter(Name == &quot;Nebraska&quot;)
 `AvgTOAllCFB` &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(`avgTO`=mean(TOMargin))</code></pre>
 <pre class="r"><code>ggplot() + 
@@ -618,7 +618,7 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
   geom_text(aes(x=2018.5, y=-7, label=&quot;Scott Frost Era&quot;), color=&quot;red&quot;) +
   geom_text(aes(x=2012, y=5, label=&quot;National Average&quot;), color=&quot;blue&quot;) +
    geom_text(aes(x=2012, y=-17, label=&quot;Nebraska&quot;), color=&quot;red&quot;) +
-  labs(x=&quot;Year&quot;, y=&quot;Avg. Turnover Margin&quot;, title= &quot;Nebraska Stays Below the National Avg. in the Turnover Game&quot;, subtitle= &quot;The Huskers&quot;, caption= &quot;CFB Stats | By Melanie Gentrup&quot;) +
+  labs(x=&quot;Year&quot;, y=&quot;Avg. Turnover Margin&quot;, title= &quot;Nebraska Stays Below the National Avg. in the Turnover Game&quot;, subtitle= &quot;The Huskers...&quot;, caption= &quot;CFB Stats | By Melanie Gentrup&quot;) +
   theme(
     plot.title = element_text(size = 16, face = &quot;bold&quot;),
     axis.title = element_text(size = 10), 
@@ -626,7 +626,7 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="melaniegentrup.github.io/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
 
     </div>
   </article>
@@ -639,10 +639,10 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
       <footer class="footer">
         <ul class="footer-links">
           <li>
-            <a href="/melaniegentrup.github.io/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
           </li>
           <li>
-            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/melaniegentrup.github.io/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
           </li>
         </ul>
       </footer>
@@ -663,7 +663,7 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
 
 
     
-<script src="/melaniegentrup.github.io/js/math-code.js"></script>
+<script src="/js/math-code.js"></script>
 <script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
 
 
