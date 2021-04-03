@@ -62,7 +62,7 @@
 
   <article class="article">
     
-    <span class="article-duration">11 min read</span>
+    <span class="article-duration">8 min read</span>
     
 
     <h1 class="article-title">Project  Draft</h1>
@@ -78,6 +78,8 @@
 <link href="/2021/04/02/project-draft/index_files/lightable/lightable.css" rel="stylesheet" />
 
 
+<p>After three seasons at Nebraska, Scott Frost’s record is 12-20, which is not ideal. Nebraska definitely isn’t a playoff team, nor has it even competed for a Big Ten title in a long time. Since Nebraska joined the Big Ten, it appeared in one conference title back in 2012 and got throttled by Wisconsin. Since joining, the Huskers have gone 68-55. So, what’s up with Nebraska? What’s been the issue for all these years in the Big Ten?</p>
+<p>Let’s take a look at some statistics over the years.</p>
 <pre class="r"><code>library(tidyverse)</code></pre>
 <pre><code>## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.0 ──</code></pre>
 <pre><code>## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
@@ -95,7 +97,7 @@
 ##     group_rows</code></pre>
 <pre class="r"><code>library(ggrepel)
 library(ggbump)</code></pre>
-<pre class="r"><code>logs &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/2020cfblogs.csv&quot;)</code></pre>
+<p>The data sets I’ll be working with are season statistics and win/loss season logs from 2011-2020. They come from Sports Reference’s college football site and CFB Stats.</p>
 <pre><code>## Warning: Duplicated column names deduplicated: &#39;20+Yards&#39; =&gt; &#39;20+Yards_1&#39; [121],
 ## &#39;30+Yards&#39; =&gt; &#39;30+Yards_1&#39; [122], &#39;40+Yards&#39; =&gt; &#39;40+Yards_1&#39; [123], &#39;50+Yards&#39;
 ## =&gt; &#39;50+Yards_1&#39; [124]</code></pre>
@@ -106,198 +108,25 @@ library(ggbump)</code></pre>
 ##   Team = col_character()
 ## )
 ## ℹ Use `spec()` for the full column specifications.</code></pre>
-<p>What is weighing Nebraska football down?</p>
-<p>First let’s take a look at a handful of stats and figure out the weight of each stat on a team’s winning percentage.</p>
+<p>So first, I need to figure out what stats hold the most weight. I’ll use a linear model to find out how much weight a specific stat has on winning percentage from the 2020 season. I’ll be using the adjusted R-squared number and p-value to figure out these numbers. To save you some really boring and confusing number</p>
 <pre class="r"><code>NetYPG &lt;- logs %&gt;% 
   mutate(NetYPG = (RushYards + PassYards)-(OppRushYards + OppPassYards)/G)
 net &lt;- lm(PCT ~ `NetYPG`, data = NetYPG)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ NetYPG, data = NetYPG)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.44089 -0.13565 -0.02542  0.13941  0.44734 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 1.710e-01  4.948e-02   3.456  0.00075 ***
-## NetYPG      1.041e-04  1.475e-05   7.059 1.02e-10 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2135 on 125 degrees of freedom
-## Multiple R-squared:  0.285,  Adjusted R-squared:  0.2793 
-## F-statistic: 49.84 on 1 and 125 DF,  p-value: 1.022e-10</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ `OppRZScore%`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `OppRZScore%`, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.55105 -0.15174 -0.01321  0.18831  0.49715 
-## 
-## Coefficients:
-##                Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    1.307019   0.250382   5.220 7.23e-07 ***
-## `OppRZScore%` -0.009828   0.003014  -3.261  0.00143 ** 
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2424 on 125 degrees of freedom
-## Multiple R-squared:  0.07839,    Adjusted R-squared:  0.07102 
-## F-statistic: 10.63 on 1 and 125 DF,  p-value: 0.001433</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ `30+Yards`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `30+Yards`, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.47624 -0.15133 -0.02082  0.16761  0.41788 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.236844   0.042854   5.527 1.82e-07 ***
-## `30+Yards`  0.013714   0.002046   6.703 6.26e-10 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2165 on 125 degrees of freedom
-## Multiple R-squared:  0.2644, Adjusted R-squared:  0.2585 
-## F-statistic: 44.94 on 1 and 125 DF,  p-value: 6.257e-10</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ `RZScore%`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `RZScore%`, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.64162 -0.17415  0.00257  0.16799  0.47996 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -0.495830   0.216041  -2.295   0.0234 *  
-## `RZScore%`   0.012044   0.002618   4.601 1.02e-05 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2335 on 125 degrees of freedom
-## Multiple R-squared:  0.1448, Adjusted R-squared:  0.138 
-## F-statistic: 21.17 on 1 and 125 DF,  p-value: 1.016e-05</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ `TFL Yards`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `TFL Yards`, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.54869 -0.14559 -0.00909  0.17447  0.45024 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.2192869  0.0514930   4.259 4.01e-05 ***
-## `TFL Yards` 0.0013304  0.0002303   5.777 5.71e-08 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2243 on 125 degrees of freedom
-## Multiple R-squared:  0.2107, Adjusted R-squared:  0.2044 
-## F-statistic: 33.37 on 1 and 125 DF,  p-value: 5.705e-08</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ `TFL Yards`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `TFL Yards`, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.54869 -0.14559 -0.00909  0.17447  0.45024 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.2192869  0.0514930   4.259 4.01e-05 ***
-## `TFL Yards` 0.0013304  0.0002303   5.777 5.71e-08 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2243 on 125 degrees of freedom
-## Multiple R-squared:  0.2107, Adjusted R-squared:  0.2044 
-## F-statistic: 33.37 on 1 and 125 DF,  p-value: 5.705e-08</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ TOMargin, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ TOMargin, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.47040 -0.15746  0.03908  0.15708  0.41854 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) 0.490457   0.018786  26.107  &lt; 2e-16 ***
-## TOMargin    0.023648   0.003252   7.271 3.42e-11 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2117 on 125 degrees of freedom
-## Multiple R-squared:  0.2972, Adjusted R-squared:  0.2916 
-## F-statistic: 52.87 on 1 and 125 DF,  p-value: 3.423e-11</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~  `Opp3rdConv%`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `Opp3rdConv%`, data = logs)
-## 
-## Residuals:
-##     Min      1Q  Median      3Q     Max 
-## -0.7039 -0.1190 -0.0226  0.1454  0.5328 
-## 
-## Coefficients:
-##               Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)    1.41616    0.12605  11.235  &lt; 2e-16 ***
-## `Opp3rdConv%` -0.02287    0.00309  -7.401 1.74e-11 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.2105 on 125 degrees of freedom
-## Multiple R-squared:  0.3047, Adjusted R-squared:  0.2991 
-## F-statistic: 54.77 on 1 and 125 DF,  p-value: 1.739e-11</code></pre>
-<pre class="r"><code>net &lt;- lm(PCT ~ `3rdConv%`, data = logs)
-summary(net)</code></pre>
-<pre><code>## 
-## Call:
-## lm(formula = PCT ~ `3rdConv%`, data = logs)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -0.48369 -0.13051 -0.00049  0.12864  0.44949 
-## 
-## Coefficients:
-##              Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept) -0.551693   0.097833  -5.639 1.08e-07 ***
-## `3rdConv%`   0.025976   0.002398  10.832  &lt; 2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 0.1813 on 125 degrees of freedom
-## Multiple R-squared:  0.4842, Adjusted R-squared:  0.4801 
-## F-statistic: 117.3 on 1 and 125 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre class="r"><code>correlations &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/correlations.csv&quot;)</code></pre>
-<pre><code>## 
-## ── Column specification ────────────────────────────────────────────────────────
-## cols(
-##   Statistic = col_character(),
-##   `Weight on Winning PCT` = col_character(),
-##   `Statisically Significant?` = col_character()
-## )</code></pre>
+#summary(net)
+net &lt;- lm(PCT ~ `OppRZScore%`, data = logs)
+#summary(net)
+net &lt;- lm(PCT ~ `30+Yards`, data = logs)
+#summary(net)
+net &lt;- lm(PCT ~ `RZScore%`, data = logs)
+#summary(net)
+net &lt;- lm(PCT ~ `TFL Yards`, data = logs)
+#summary(net)
+net &lt;- lm(PCT ~ TOMargin, data = logs)
+#summary(net)
+net &lt;- lm(PCT ~ `3rdConv%`, data = logs)
+#summary(net)
+correlations &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/correlations.csv&quot;)</code></pre>
+<p>After finding all of my correlations, I’m going to give you a simplified version of that data.</p>
 <pre class="r"><code>correlations %&gt;% 
   kable() %&gt;% 
   kable_styling(bootstrap_options = c(&quot;striped&quot;, &quot;condensed&quot;)) %&gt;%
@@ -397,7 +226,7 @@ Yes
 </tr>
 </tbody>
 </table>
-<p>Now let’s take a look at how Nebraska has done since it joined the Big Ten. We’re going to look at 3rd Down Conversion, Turnover Margin, and 30+ Yard Plays.</p>
+<p>There are a couple statistics that stick out among the pack, and obviously 3rd Down Conversion is a big deal. I also want to take a look at Turnover Margin and 30+ Yard Plays over the years. Now I can bring in my season statistics from 2011 all the way up to 2020.</p>
 <pre class="r"><code>AllCFB &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project/logs11-20.csv&quot;)</code></pre>
 <pre><code>## 
 ## ── Column specification ────────────────────────────────────────────────────────
@@ -421,6 +250,7 @@ Yes
 ##   Losses = col_double(),
 ##   Pct = col_double()
 ## )</code></pre>
+<p>First, I’m going to filter out the Big Ten. Then, I’m going to find the average 3rd Conversion Percentage and average winning percentage from 2011-2020. I also found the national average of 3rd Down Conversion. I also separated Nebraska and Ohio State so I can highlight them.</p>
 <pre class="r"><code>bigten &lt;- AllCFB %&gt;%
   filter(Name == &quot;Nebraska&quot; | Name == &quot;Iowa&quot; | Name == &quot;Northwestern&quot; | Name == &quot;Ohio State&quot; | Name == &quot;Michigan State&quot; | Name == &quot;Michigan&quot; | Name == &quot;Rutgers&quot; |Name == &quot;Maryland&quot; | Name == &quot;Indiana&quot; | Name == &quot;Illinois&quot; | Name == &quot;Wisconsin&quot; | Name == &quot;Minnesota&quot; | Name == &quot;Penn State&quot; | Name == &quot;Purdue&quot;)</code></pre>
 <pre class="r"><code>average3rdConv &lt;- bigten %&gt;% 
@@ -475,7 +305,7 @@ OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</c
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>NU &lt;- bigten %&gt;% filter(Name == &quot;Nebraska&quot;)
 `Avg3rdAllCFB` &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(`avg3rd`=mean(`3rdConv%`))</code></pre>
 <pre class="r"><code>ggplot() + 
@@ -495,7 +325,7 @@ OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</c
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
 <pre class="r"><code>AvgBigPlays &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(avgBP=mean(`30+YardsPlays`))</code></pre>
 <pre class="r"><code>ggplot() + 
   geom_line(data=AllCFB, aes(x=Year, y=`30+YardsPlays`, group=Name), color=&quot;light grey&quot;) +
@@ -503,7 +333,7 @@ OSU3rdDown &lt;- average3rdConv %&gt;% filter(Name == &quot;Ohio State&quot;)</c
   geom_line(data=NU, aes(x=Year, y=`30+YardsPlays`, group= Name), color= &quot;red&quot;) +
   scale_x_continuous(breaks= c(2011,2012,2013,2014,2015,2016,2017,2018,2019,2020)) +
   theme_minimal() </code></pre>
-<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code>averageBigPlays &lt;- bigten %&gt;% 
   group_by(Name) %&gt;% 
   summarize(
@@ -555,7 +385,7 @@ OSUBP &lt;- averageBigPlays %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-16-1.png" width="672" /></p>
 <pre class="r"><code>averageTOMargin &lt;- bigten %&gt;% group_by(Name) %&gt;% summarize(
   AvgTOMargin = mean(TOMargin),
   AvgWinPct = mean(Pct)
@@ -606,7 +436,7 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
     plot.subtitle = element_text(size=10),
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank() )</code></pre>
-<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 <pre class="r"><code>NUTO &lt;- bigten %&gt;% filter(Name == &quot;Nebraska&quot;)
 `AvgTOAllCFB` &lt;- AllCFB %&gt;% group_by(Year) %&gt;% summarise(`avgTO`=mean(TOMargin))</code></pre>
 <pre class="r"><code>ggplot() + 
@@ -626,7 +456,7 @@ OSUTO &lt;- averageTOMargin %&gt;% filter(Name == &quot;Ohio State&quot;)</code>
     legend.position = &quot;none&quot;,
     panel.grid.minor = element_blank()
   )</code></pre>
-<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-22-1.png" width="672" /></p>
+<p><img src="/2021/04/02/project-draft/index_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
 
     </div>
   </article>
