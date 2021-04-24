@@ -3,16 +3,25 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
     <loc>/</loc>
-    <lastmod>2021-04-03T00:00:00+00:00</lastmod>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/categories/</loc>
-    <lastmod>2021-04-03T00:00:00+00:00</lastmod>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/</loc>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/post/</loc>
-    <lastmod>2021-04-03T00:00:00+00:00</lastmod>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/tags/r/</loc>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/categories/sports/</loc>
-    <lastmod>2021-04-03T00:00:00+00:00</lastmod>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
+  </url><url>
+    <loc>/tags/</loc>
+    <lastmod>2021-04-23T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/2021/04/03/what-is-weighing-nebraska-football-down/</loc>
     <lastmod>2021-04-03T00:00:00+00:00</lastmod>
@@ -33,7 +42,5 @@
     <lastmod>2021-03-28T00:00:00+00:00</lastmod>
   </url><url>
     <loc>/about/</loc>
-  </url><url>
-    <loc>/tags/</loc>
   </url>
 </urlset>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R on A Hugo website</title>
+    <link>/tags/r/</link>
+    <description>Recent content in R on A Hugo website</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    <lastBuildDate>Fri, 23 Apr 2021 00:00:00 +0000</lastBuildDate><atom:link href="/tags/r/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Did the Big Ten Wear Themselves Out Too Much Prior To March Madness?</title>
+      <link>/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/</link>
+      <pubDate>Fri, 23 Apr 2021 00:00:00 +0000</pubDate>
+      
+      <guid>/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/</guid>
+      <description>According to ESPN, 35% of fans picked the Gonzaga Bulldogs to take home the NCAA Men’s Basketball Championship. 15.4% picked the Illinois Fighting Illini, 10.2% picked the actual winner-the Baylor Bears. The Michigan Wolverines were picked by 7.8% of the fans, the Hawkeyes from Iowa just 3.6%, and the Ohio State Buckeyes 3.5%.
+According to an Insider article, 53.1% of fans picked Illinois to make the Final Four, 39.</description>
+    </item>
+    
+  </channel>
+</rss>

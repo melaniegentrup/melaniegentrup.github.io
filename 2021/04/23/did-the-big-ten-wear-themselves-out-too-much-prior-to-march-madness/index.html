@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="generator" content="Hugo 0.81.0" />
+
+
+<title>Did the Big Ten Wear Themselves Out Too Much Prior To March Madness? - A Hugo website</title>
+<meta property="og:title" content="Did the Big Ten Wear Themselves Out Too Much Prior To March Madness? - A Hugo website">
+
+
+  <link href='/favicon.ico' rel='icon' type='image/x-icon'/>
+
+
+
+  
+
+
+
+
+
+
+
+
+<link href='//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css' rel='stylesheet' type='text/css' />
+
+
+
+<link rel="stylesheet" href="/css/fonts.css" media="all">
+<link rel="stylesheet" href="/css/main.css" media="all">
+
+
+
+  </head>
+  <body>
+    <div class="wrapper">
+      <header class="header">
+        <nav class="nav">
+  <a href="/" class="nav-logo">
+    <img src="/images/logo.png"
+         width="50"
+         height="50"
+         alt="Logo">
+  </a>
+
+  <ul class="nav-links">
+    
+    <li><a href="/about/">About</a></li>
+    
+    <li><a href="https://github.com/rstudio/blogdown">GitHub</a></li>
+    
+    <li><a href="https://twitter.com/mgentrup">Twitter</a></li>
+    
+  </ul>
+</nav>
+
+      </header>
+
+
+<main class="content" role="main">
+
+  <article class="article">
+    
+    <span class="article-duration">8 min read</span>
+    
+
+    <h1 class="article-title">Did the Big Ten Wear Themselves Out Too Much Prior To March Madness?</h1>
+
+    
+    <span class="article-date">2021-04-23</span>
+    
+
+    <div class="article-content">
+      
+<script src="/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/index_files/header-attrs/header-attrs.js"></script>
+
+
+<p>According to ESPN, 35% of fans picked the Gonzaga Bulldogs to take home the NCAA Men’s Basketball Championship. 15.4% picked the Illinois Fighting Illini, 10.2% picked the actual winner-the Baylor Bears. The Michigan Wolverines were picked by 7.8% of the fans, the Hawkeyes from Iowa just 3.6%, and the Ohio State Buckeyes 3.5%.</p>
+<p>According to an Insider article, 53.1% of fans picked Illinois to make the Final Four, 39.6% picked Michigan to make the Final Four, 23.1% picked Ohio State to make the Final Four, and 14.2% picked Iowa to also make the final four.</p>
+<p>The Big Ten had very high hopes in the tournament this year, yet no Big Ten teams even made the Final Four. 2-seeded Ohio State was upset in the first round by 15-seeded Oral Roberts. 1-seed Michigan was beat by the tournament’s underdog-No. 11 UCLA-in the Elite Eight. No. 2 seed Iowa was upset by the 7-seeded Oregon Ducks in the second round. No. 1 seeded Illinois was shocked in the second round by No.8 Loyola Chicago. No. 10 Rutgers couldn’t overcome the 2 seeded-Houston Cougars, No. 10 Maryland couldn’t beat the 2-seeded Alabama Crimson Tide, and No.11 Michigan State couldn’t get past the First Four, falling to No. 11 UCLA.</p>
+<p>So what the heck went wrong with the Big Ten? I think that the Big Ten just beat each other up all season, that by the time the tournament rolled around, they were too tired to perform.</p>
+<p>Let’s take a look at some numbers to determine this.</p>
+<pre class="r"><code>library(tidyverse)
+library(ggalt)
+library(ggrepel)
+seasonteams &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project 2/CBBseasonlogs.csv&quot;)
+seasonplayers &lt;- read_csv(&quot;~/Box/_SPMC 350/Homework/Project 2/MMplayerstats.csv&quot;)</code></pre>
+<p>The data sets I used came from Sports References College Basketball page. One set has all season stats from all college basketball teams, and the other has player stats from the teams that played in the tournament.</p>
+<p>Before we get to far, let’s take a look at who had the toughest schedules in college basketball. First, I wanted to separate the Big Ten teams from the rest of college basketball, since that’s who I want to highlight. I also created new fields to determine which teams out of the Top 15 Strength of Schedules were in the Big Ten or not.</p>
+<pre class="r"><code>BigTenTeams &lt;- seasonteams %&gt;% 
+  filter(School == &quot;Nebraska&quot; |  School == &quot;Penn State&quot; | School == &quot;Rutgers*&quot; | School == &quot;Indiana&quot; | School == &quot;Ohio State*&quot; | School == &quot;Maryland*&quot; | School == &quot;Wisconsin*&quot; | School == &quot;Northwestern&quot; | School == &quot;Minnesota&quot; | School == &quot;Michigan State*&quot; | School == &quot;Illinois*&quot; | School == &quot;Michigan*&quot; | School == &quot;Purdue&quot; | School == &quot;Iowa*&quot; )
+
+BigTenType &lt;- BigTenTeams %&gt;% 
+  mutate(
+  Type = &quot;Big Ten&quot;
+)
+EverybodyElse &lt;- seasonteams %&gt;%
+  filter(School == &quot;Washington&quot; | School == &quot;Kentucky&quot; | School == &quot;UCLA*&quot;)
+
+EverybodyElseType &lt;- EverybodyElse %&gt;% 
+  mutate(
+    Type = &quot;Other&quot;
+)
+TopSOS &lt;- bind_rows(BigTenType, EverybodyElseType)</code></pre>
+<p>Here are the top 15 teams that played toughest schedules.</p>
+<pre class="r"><code>Top15SOS  &lt;- TopSOS %&gt;%
+  arrange(desc(SOS)) %&gt;%
+  top_n(15, wt = SOS)
+ggplot() +
+   geom_bar(data=Top15SOS,
+  aes(x=reorder(School, SOS), weight=SOS, fill=Type)) + 
+  coord_flip() +
+    labs(x=&quot;Strength of Schedule&quot;, y=&quot;Teams&quot;, title=&quot;The Big Ten Played Toughest Schedule&quot;, subtitle=&quot;Twelve B1G teams are in the top 15 hardest schedules&quot;, caption=&quot;*Denotes Tournament Teams | Source: Sports-Reference.com | By Melanie Gentrup&quot;) +
+   scale_fill_manual(values=c(&quot;#0088ce&quot;, &quot;#000000&quot;)) +
+  theme_minimal() + 
+  theme(
+    legend.title = element_blank(),
+    plot.title = element_text(size = 14, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    axis.text = element_text(size = 8),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank())</code></pre>
+<p><img src="/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/index_files/figure-html/unnamed-chunk-3-1.png" width="672" />
+The answer is not so surprising. The Big Ten easily played the toughest schedule in college basketball. 12 of the 14 teams land in the top 15 of toughest schedules, and the other 2 are within the top 25. This definitely supports the case that the Big Ten could have just been exhausted by tournament time.</p>
+<p>But let’s take a look at who won the most games against the toughest opponents. It’s fair to make the assumption that the teams that played the toughest teams and won the most games had the toughest road to the postseason. Here, I separated the Big Ten tournament teams, again, since we’re highlighting them.</p>
+<pre class="r"><code>BigTenTourneyTeams &lt;- BigTenTeams %&gt;%
+  filter(School == &quot;Rutgers*&quot; | School == &quot;Ohio State*&quot; | School == &quot;Maryland*&quot; | School == &quot;Wisconsin*&quot; | School == &quot;Michigan State*&quot; | School == &quot;Illinois*&quot; | School == &quot;Michigan*&quot; | School == &quot;Iowa*&quot; )</code></pre>
+<p>I intended to highlight the teams that had a toughest road- which is what you see here. I also found the average of Team Wins and Team Strength of Schedule among tournament teams.</p>
+<pre class="r"><code>seasonplayers %&gt;%
+  summarize(
+  AvgWins = mean(TeamWins),
+  AvgSOS = mean(TeamSOS),
+)</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   AvgWins AvgSOS
+##     &lt;dbl&gt;  &lt;dbl&gt;
+## 1    19.4   4.79</code></pre>
+<pre class="r"><code>Illinois &lt;- seasonteams %&gt;%
+  filter(School == &quot;Illinois*&quot;)
+Michigan &lt;- seasonteams %&gt;%
+  filter(School == &quot;Michigan*&quot;)
+Iowa &lt;- seasonteams %&gt;%
+  filter(School == &quot;Iowa*&quot;)
+OhioState &lt;- seasonteams %&gt;%
+  filter(School == &quot;Ohio State*&quot;)
+UCLA &lt;- seasonteams %&gt;%
+  filter(School == &quot;UCLA*&quot;)
+USC &lt;- seasonteams %&gt;%
+  filter(School == &quot;Southern California*&quot;)
+OregonState &lt;-seasonteams %&gt;%
+  filter(School == &quot;Oregon State*&quot;)
+Oregon &lt;- seasonteams %&gt;% 
+  filter(School == &quot;Oregon*&quot;)
+
+RestOfBigTen &lt;- seasonteams %&gt;%
+  filter(School == &quot;Maryland*&quot; | School == &quot;Rutgers*&quot; | School == &quot;Michigan State*&quot; | School == &quot;Wisconsin*&quot;)</code></pre>
+<pre class="r"><code>ggplot() + geom_point(data=seasonplayers, aes(x=TeamSOS, y=TeamWins)) +
+  geom_vline(xintercept = 4.792122, color = &quot;red&quot;) +
+  geom_hline(yintercept = 19.41356, color = &quot;red&quot;) +
+  geom_point(data= BigTenTourneyTeams, aes(x=SOS, y=Wins),
+  color =&quot;#0094da&quot;) +
+geom_point(data= Illinois, aes(x=SOS, y=Wins, color=&quot;Illinois&quot;)) +
+  geom_point(data= Michigan, aes(x=SOS, y=Wins, color=&quot;Michigan&quot;)) +
+  geom_point(data= Iowa, aes(x=SOS, y=Wins, color = &quot;Iowa&quot;)) +
+  geom_point(data=OhioState, aes(x=SOS, y=Wins, color = &quot;Ohio State&quot;)) +
+  geom_point(data=UCLA, aes(x=SOS, y=Wins, color = &quot;UCLA&quot;)) +
+  geom_point(data=USC, aes(x=SOS, y=Wins, color = &quot;USC&quot;)) +
+  geom_point(data=OregonState, aes(x=SOS, y=Wins, color= &quot;Oregon State&quot;)) +
+  geom_point(data=Oregon, aes(x=SOS, y=Wins, color = &quot;Oregon&quot;)) +
+  scale_color_manual(values=c(&quot;#E84A27&quot;, &quot;#FFCD00&quot;, &quot;#00274C&quot;, &quot;#c1133d&quot;, &quot;#154733&quot;, &quot;#D73F09&quot;, &quot;#2774AE&quot;, &quot;#990000&quot;)) +
+  geom_encircle(data=RestOfBigTen, aes(x=SOS, y=Wins), s_shape=2, expand=.2, colour=&quot;#0094da&quot;) +
+  geom_text(aes(x=9, y=13, label=&quot;Rest of B1G\nTournament Teams&quot;), color=&quot;#0094da&quot;) +
+  labs(x=&quot;Strength of Schedule&quot;, y=&quot;Wins&quot;, title=&quot;The Big Ten Had the Toughest Road to the Tournament&quot;, subtitle=&quot;But so did the Pac-12?&quot;, caption=&quot;Source: Sports-Reference.com | By Melanie Gentrup&quot;) +
+  theme_minimal() +
+  theme(
+    legend.title = element_blank(),
+    plot.title = element_text(size = 16, face = &quot;bold&quot;),
+    axis.title = element_text(size = 10),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank())</code></pre>
+<p><img src="/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/index_files/figure-html/unnamed-chunk-6-1.png" width="672" />
+The first thing I noticed was after plotting this chart was that there were more teams around the Big Ten that had a tough road. And they happen to be Pac-12 Teams. The Pac-12 was a conference that surprised a lot of people-beating out Michigan, Michigan State, Iowa, Kansas, and Oklahoma State in the tournament. The Pac-12 was certainly an underrated conference, and also had a tough road to the postseason. And the Pac-12, overall, did better than the Big 10. At this point, I don’t think the Big Ten gets to make excuses.</p>
+<p>Before I make any conclusions, let’s take a look at players. I want to determine which player played the most against the toughest team. Introducing the Tired Rating. It’s a very simple calculation- Minutes Played Per Game + Team Strength of Schedule. The higher the number, the more likely the player is tired or potentially not playing their best in the tournament because they’ve exhausted themselves.</p>
+<p>First, I found the average of minutes played and Team Strength of Schedule.</p>
+<pre class="r"><code>seasonplayers %&gt;%
+  summarise(
+  AvgMP = mean(MP),
+  AvgSOS = mean(TeamSOS)
+)</code></pre>
+<pre><code>## # A tibble: 1 x 2
+##   AvgMP AvgSOS
+##   &lt;dbl&gt;  &lt;dbl&gt;
+## 1  15.3   4.79</code></pre>
+<p>Here’s where I calculated the Top 15 most “tired” players. I also highlighted the Big Ten and Pac-12 players.</p>
+<pre class="r"><code>TiredPlayers &lt;- seasonplayers %&gt;%
+  group_by(Player, Team) %&gt;%
+  mutate(
+  TiredRating = TeamSOS + MP,
+)
+
+Top15Tired &lt;- TiredPlayers %&gt;%
+  ungroup() %&gt;%
+  select(Player, Team, TiredRating) %&gt;%
+  arrange(desc(TiredRating)) %&gt;%
+  top_n(15, wt=TiredRating) %&gt;%
+  mutate(PlayerTeam = paste(Player, Team, sep=&quot;, &quot;))
+
+UCLAPlayers &lt;- Top15Tired %&gt;%
+  filter(Player == &quot;Jaime Jaquez&quot; | Player == &quot;Tyger Campbell&quot;)
+IllinoisPlayers &lt;- Top15Tired %&gt;%
+  filter(Player == &quot;Ayo Dosunmu&quot; | Player == &quot;Trent Frazier&quot;)
+MarylandPlayers &lt;- Top15Tired %&gt;%
+  filter(Player == &quot;Eric Ayala&quot; | Player == &quot;Aaron Wiggins&quot;)
+WisconsinPlayers &lt;- Top15Tired %&gt;%
+  filter(Player == &quot;D&#39;Mitrik Trice&quot;)
+OregonPlayers &lt;- Top15Tired %&gt;%
+  filter(Player == &quot;Will Richardson&quot;)</code></pre>
+<p>Now, we can take a look at the top 15 most tired players.</p>
+<pre class="r"><code>ggplot() + 
+  geom_lollipop(
+    data=Top15Tired, 
+    aes(y=reorder(PlayerTeam, TiredRating), x=TiredRating),
+    horizontal = TRUE) +
+  geom_lollipop(
+    data=UCLAPlayers,
+    aes(y=PlayerTeam, x=TiredRating),
+    horizontal = TRUE,
+    color = &quot;#2774AE&quot;) + 
+ geom_lollipop(
+    data=IllinoisPlayers,
+    aes(y=PlayerTeam, x=TiredRating),
+    horizontal = TRUE,
+    color = &quot;#E84A27&quot;) + 
+   geom_lollipop(
+    data=MarylandPlayers,
+    aes(y=PlayerTeam, x=TiredRating),
+    horizontal = TRUE,
+    color = &quot;#E03A3E&quot;) + 
+geom_lollipop(
+    data=WisconsinPlayers,
+    aes(y=PlayerTeam, x=TiredRating),
+    horizontal = TRUE,
+    color = &quot;#C4012F&quot;) + 
+  geom_lollipop(
+    data=OregonPlayers,
+    aes(y=PlayerTeam, x=TiredRating),
+    horizontal = TRUE,
+    color = &quot;#154733&quot;) + 
+  labs(x=&quot;Tired Rating&quot;, y=&quot;Player&quot;, title=&quot;The Big Ten Really Has No Excuses&quot;, subtitle=&quot;Despite a lot of players ranking high in the Tired Rating,\n but the Pac-12 also ranks high&quot;, caption=&quot;Source: Sports-Reference.com | By Melanie Gentrup&quot;) +
+  theme_minimal() + 
+  theme(
+    plot.title = element_text(size = 14, face = &quot;bold&quot;),
+    axis.title = element_text(size = 8),
+    axis.text = element_text(size = 7),
+    axis.ticks = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.grid.major.x = element_blank()) </code></pre>
+<p><img src="/2021/04/23/did-the-big-ten-wear-themselves-out-too-much-prior-to-march-madness/index_files/figure-html/unnamed-chunk-9-1.png" width="672" />
+The Big Ten’s most-tired players:</p>
+<p>Ayo Dosunmu and Tyger Campbell from Illinois. Illinois was shocked by Loyola Chicago in the second round.</p>
+<p>Eric Ayala and Aaron Wiggins from Maryland. Maryland wasn’t a favorite to do very well in the tournament and got knocked out my a much better Alabama team-no surprises there.</p>
+<p>Wisconsin’s D’Mitrik Trice-Wisconsin lost to eventual champion Baylor. Again, not so much of a surprise.</p>
+<p>The Pac-12’s most-tired players were from UCLA and Oregon. UCLA was the tournament’s Cinderella, knocking off Michigan and almost beating Gonzaga in the Final Four. Oregon’s big tournament win came against Iowa.</p>
+<p>The title says it all. The Big Ten really didn’t have any excuses as to why it flopped so bad in the NCAA Tournament. The Big Ten and the Pac-12 had, arguably, the toughest roads to the postseason. The Pac-12 did a lot better than the Big Ten. Had the Tired Rankings showed players like Luka Garza from Iowa, Duane Washington and E.J. Liddell from Ohio State, or Isaiah Livers from Michigan, I would’ve been more inclined to say that the Big Ten just beat each other up too much.</p>
+<p>When, in fact, the Big Ten truly just didn’t show up.</p>
+
+    </div>
+  </article>
+
+  
+
+
+</main>
+
+      <footer class="footer">
+        <ul class="footer-links">
+          <li>
+            <a href="/index.xml" type="application/rss+xml" target="_blank">RSS feed</a>
+          </li>
+          <li>
+            <a href="https://gohugo.io/" class="footer-links-kudos">Made with <img src="/images/hugo-logo.png" alt="Img link to Hugo website" width="22" height="22"></a>
+          </li>
+        </ul>
+      </footer>
+
+    </div>
+    
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+
+
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/yaml.min.js"></script>
+<script>hljs.configure({languages: []}); hljs.initHighlightingOnLoad();</script>
+
+
+
+    
+<script src="/js/math-code.js"></script>
+<script async src="//cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+
+
+    
+  </body>
+</html>
+
